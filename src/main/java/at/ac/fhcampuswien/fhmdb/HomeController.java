@@ -39,6 +39,7 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         observableMovies.addAll(allMovies);         // add dummy data to observable list
 
+
         // initialize UI stuff
         movieListView.setItems(observableMovies);   // set data of observable list to list view
         movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
@@ -57,6 +58,7 @@ public class HomeController implements Initializable {
             } else {
                 // TODO sort observableMovies descending
                 sortBtn.setText("Sort (asc)");
+
             }
         });
 

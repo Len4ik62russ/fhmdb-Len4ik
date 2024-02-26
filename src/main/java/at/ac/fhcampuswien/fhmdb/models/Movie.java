@@ -16,9 +16,7 @@ public class Movie {
 
     private String description;
 
-    public String getGenre() {
-        return genre;
-    }
+
 
     public void setGenre(String genre) {
         this.genre = genre;
@@ -43,6 +41,9 @@ public class Movie {
         return description;
     }
 
+    public String getGenre() {
+        return genre;
+    }
 
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
@@ -88,6 +89,7 @@ public class Movie {
         movies.add(new Movie("The Truman Show", "An insurance salesman discovers his whole " +
                 "life is actually a reality TV show", "Comedy"));
         movies.add(new Movie("The Exorcist", "When a 12-year", "Horror"));
+
 
 
 

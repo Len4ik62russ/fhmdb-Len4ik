@@ -37,7 +37,11 @@ public class HomeController implements Initializable {
 
     public List<Movie> allMovies = Movie.initializeMovies();
 
-    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
+    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
+    private ObservableList<Movie> sfm = FXCollections.observableArrayList();
+
+    private boolean filtered = false;
+    // automatically updates corresponding UI elements when underlying data changes
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -62,7 +66,12 @@ public class HomeController implements Initializable {
             if(sortBtn.getText().equals("Sort (asc)")) {
                 // TODO sort observableMovies ascending
                 sortBtn.setText("Sort (desc)");
-                sortMovies(true);
+
+                    sortMovies(true);
+
+
+
+
             } else {
                 // TODO sort observableMovies descending
                 sortBtn.setText("Sort (asc)");
@@ -79,18 +88,12 @@ public class HomeController implements Initializable {
         // Apply filters when pressing Enter in search field
         searchField.setOnAction(actionEvent -> {
             System.out.println("Enter pressed");
-            searchQuery();
+            //searchQuery();
             applyFilters();
         });
     }
-    private void sortMovies(boolean ascending) {
-        Comparator<Movie> comparator = Comparator.comparing(Movie::getTitle);
-        if (!ascending) {
-            comparator = comparator.reversed();
-        }
-        observableMovies.sort(comparator);
-        movieListView.setItems(observableMovies); // Update the ListView with sorted items
-    }
+
+
 
     private void applyFilters() {
         String query = searchField.getText().toLowerCase();
@@ -98,17 +101,46 @@ public class HomeController implements Initializable {
 
         FilteredList<Movie> filteredMovies = observableMovies.filtered(movie ->
                 (query.isEmpty() || (movie.getTitle().toLowerCase().contains(query) || movie.getDescription().toLowerCase().contains(query)))
-                        && (movie.getGenre().equals(selectedGenre)));
+                        && (movie.getGenre().equals(selectedGenre) || selectedGenre == null || selectedGenre.isEmpty()));
 
         SortedList<Movie> sortedFilteredMovies = new SortedList<>(filteredMovies);
-        //sortedFilteredMovies.comparatorProperty().bind(movieListView.comparatorProperty()); // Corrected line
-        movieListView.setItems(sortedFilteredMovies);
+
+
+
+        sfm.addAll(filteredMovies);
+           //sortedFilteredMovies.comparatorProperty().bind(movieListView.comparatorProperty()); // Corrected line
+            movieListView.setItems(sortedFilteredMovies);
+            filtered = true;
+        }
+    private void sortMovies(boolean ascending) {
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getTitle);
+        if (!ascending) {
+            comparator = comparator.reversed();
+        }
+        if (filtered == true) {
+            sfm.sort(comparator);
+            movieListView.setItems(sfm);
+        } else {
+
+            observableMovies.sort(comparator);
+            movieListView.setItems(observableMovies); // Update the ListView with sorted items
+        }
     }
-    private void searchQuery() {
+    /*private void sortFilteredMovies(boolean ascending) {
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getTitle);
+        if (!ascending) {
+            comparator = comparator.reversed();
+        }
+
+
+        sfm.sort(comparator);
+        movieListView.setItems(sfm); // Update the ListView with sorted items
+    }*/
+    /*private void searchQuery() {
         String query = searchField.getText().toLowerCase();
         FilteredList<Movie> filteredMovies = observableMovies.filtered(movie -> movie.getTitle().toLowerCase().contains(query) || movie.getDescription().toLowerCase().contains(query));
         movieListView.setItems(filteredMovies);
-    }
+    }*/
 
 
 

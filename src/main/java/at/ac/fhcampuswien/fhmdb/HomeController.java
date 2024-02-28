@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.ui.CustomPredicate;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -14,9 +15,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
@@ -36,6 +39,8 @@ public class HomeController implements Initializable {
     public JFXButton sortBtn;
 
     public List<Movie> allMovies = Movie.initializeMovies();
+
+
 
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     private ObservableList<Movie> sfm = FXCollections.observableArrayList();
@@ -96,22 +101,39 @@ public class HomeController implements Initializable {
 
 
     private void applyFilters() {
-        String query = searchField.getText().toLowerCase();
+        String query =  searchField.getText().toLowerCase();
+
+        /*if (query.matches(".*\\b" + query + "\\b.*")) {
+            System.out.println(query);
+            query2 = query;
+        } else {
+            query2 = null;
+        }*/
+
+
         String selectedGenre = genreComboBox.getValue();
 
+
         FilteredList<Movie> filteredMovies = observableMovies.filtered(movie ->
-                (query.isEmpty() || (movie.getTitle().toLowerCase().contains(query) || movie.getDescription().toLowerCase().contains(query)))
-                        && (movie.getGenre().equals(selectedGenre) || selectedGenre == null || selectedGenre.isEmpty()));
+
+               movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(".*\\b" + query + "\\b.*") && movie.getGenre().equalsIgnoreCase(selectedGenre) ||
+                       movie.getDescription().toLowerCase().contains(query) &&
+                       movie.getDescription().toLowerCase().matches(".*\\b" + query + "\\b.*") && selectedGenre == null || query.isEmpty() && movie.getGenre().equalsIgnoreCase(selectedGenre) ||
+                       movie.getDescription().toLowerCase().contains(query) &&
+                               movie.getDescription().toLowerCase().matches(".*\\b" + query + "\\b.*") && movie.getGenre().equalsIgnoreCase(selectedGenre));
+
+        //original(query.isEmpty() ||(movie.getTitle().toLowerCase().contains(query)) || movie.getDescription().toLowerCase().contains(query)) &&
+        //original(movie.getGenre().equals(selectedGenre) || selectedGenre == null || selectedGenre.isEmpty()));
+
 
         SortedList<Movie> sortedFilteredMovies = new SortedList<>(filteredMovies);
 
 
-
         sfm.addAll(filteredMovies);
-           //sortedFilteredMovies.comparatorProperty().bind(movieListView.comparatorProperty()); // Corrected line
-            movieListView.setItems(sortedFilteredMovies);
-            filtered = true;
-        }
+        //sortedFilteredMovies.comparatorProperty().bind(movieListView.comparatorProperty()); // Corrected line
+        movieListView.setItems(sortedFilteredMovies);
+        filtered = true;
+    }
     private void sortMovies(boolean ascending) {
         Comparator<Movie> comparator = Comparator.comparing(Movie::getTitle);
         if (!ascending) {
@@ -126,6 +148,7 @@ public class HomeController implements Initializable {
             movieListView.setItems(observableMovies); // Update the ListView with sorted items
         }
     }
+
     /*private void sortFilteredMovies(boolean ascending) {
         Comparator<Movie> comparator = Comparator.comparing(Movie::getTitle);
         if (!ascending) {

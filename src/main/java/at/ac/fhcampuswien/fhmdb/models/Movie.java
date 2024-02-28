@@ -34,6 +34,7 @@ public class Movie {
     }
 
     public String getTitle() {
+
         return title;
     }
 
@@ -89,6 +90,11 @@ public class Movie {
         movies.add(new Movie("The Truman Show", "An insurance salesman discovers his whole " +
                 "life is actually a reality TV show", "Comedy"));
         movies.add(new Movie("The Exorcist", "When a 12-year", "Horror"));
+        movies.add(new Movie("Killers", "Two killers war", "Crime"));
+        movies.add(new Movie("Case", "Two layers war", "Crime"));
+        movies.add(new Movie("Judge", "Two Judges war", "Crime"));
+        movies.add(new Movie("Paradise", "Two gangsters war", "Crime"));
+        movies.add(new Movie("Interrupt", "Two programmers war", "Action"));
 
 
 

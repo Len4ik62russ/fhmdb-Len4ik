@@ -4,22 +4,24 @@ import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 public class MovieCell extends ListCell<Movie> {
-    private final Label title = new Label();
-    private final Label detail = new Label();
-    private final Label genre = new Label();
+    private  final Label title = new Label();
+    private  final Label detail = new Label();
+    private  final Label genre = new Label();
 
     private final VBox layout = new VBox(title, detail, genre);
 
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
+
+
         super.updateItem(movie, empty);
+
 
         if (empty || movie == null) {
             setText(null);
@@ -50,6 +52,7 @@ public class MovieCell extends ListCell<Movie> {
             layout.spacingProperty().set(10);
             layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);
             setGraphic(layout);
+            ;
         }
     }
 }

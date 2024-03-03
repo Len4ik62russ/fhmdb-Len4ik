@@ -53,6 +53,7 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
 
+
         observableMovies.addAll(allMovies);// add dummy data to observable list
         //observableMovies = observableMovies.stream().distinct().collect(Collectors.toCollection(FXCollections::observableArrayList));
 
@@ -101,6 +102,8 @@ public class HomeController implements Initializable {
         });
         // Filter button event handler
         filterBtn.setOnAction(actionEvent -> {
+
+
             if(genreComboBox.getValue() == "Without genre"){
                 genreComboBox.setValue(null);
                 genreComboBox.setPromptText("Filter by Genre");
@@ -118,8 +121,16 @@ public class HomeController implements Initializable {
             //searchQuery();
 
 
-                applyFilters();
 
+            if(genreComboBox.getValue() == "Without genre"){
+                genreComboBox.setValue(null);
+                genreComboBox.setPromptText("Filter by Genre");
+                movieListView.setItems(observableMovies);
+                applyFilters();
+            }else {
+
+                applyFilters();
+            }
 
         });
     }
@@ -165,8 +176,9 @@ public class HomeController implements Initializable {
 
         SortedList<Movie> sortedFilteredMovies = new SortedList<>(filteredMovies);
 
-
-        sfm.addAll(filteredMovies);
+        sfm.clear();
+        sfm.addAll(sortedFilteredMovies);
+        System.out.println(sfm.size());
 
         //sortedFilteredMovies.comparatorProperty().bind(movieListView.comparatorProperty()); // Corrected line
         //sortedFilteredMovies.setComparator(Comparator.comparing(Movie::getTitle));
@@ -198,13 +210,16 @@ public class HomeController implements Initializable {
 
 
     }
+
     private void sortMovies(boolean ascending) {
         Comparator<Movie> comparator = Comparator.comparing(Movie::getTitle);
         if (!ascending) {
             comparator = comparator.reversed();
+
         }
         if (filtered == true) {
             sfm.sort(comparator);
+
             movieListView.setItems(sfm);
         } else {
 

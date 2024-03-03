@@ -150,9 +150,9 @@ public class HomeController implements Initializable {
                        || query.isEmpty() && movie.getGenre().equalsIgnoreCase(selectedGenre) ||
                        movie.getDescription().toLowerCase().contains(query) &&
                                movie.getDescription().toLowerCase().matches(".*\\b" + query + "\\b.*") && movie.getGenre().equalsIgnoreCase(selectedGenre)
-        || movie.getDescription().toLowerCase().contains(query) &&
-                movie.getDescription().toLowerCase().matches(query + "\\b.*") && movie.getGenre().equalsIgnoreCase(selectedGenre)
-                ||  movie.getDescription().toLowerCase().contains(query) &&
+                       || movie.getDescription().toLowerCase().contains(query) &&
+                       movie.getDescription().toLowerCase().matches(query + "\\b.*") && movie.getGenre().equalsIgnoreCase(selectedGenre)
+                       ||  movie.getDescription().toLowerCase().contains(query) &&
                        movie.getDescription().toLowerCase().matches(".*\\b" + query) && movie.getGenre().equalsIgnoreCase(selectedGenre));
 
 
@@ -181,12 +181,13 @@ public class HomeController implements Initializable {
         if (movieListView.getItems().size() > 4) { // Beispiel: Zeigen Sie an, dass die contentHBox wächst, wenn mehr als 10 Elemente vorhanden sind
             VBox.setVgrow(movieListView, Priority.ALWAYS);
             //scene.getWindow().setHeight(890);
-        } else if(movieListView.getItems().size() <= 4){
+        } else if(movieListView.getItems().size() <= 4) {
             //movieListView.setPrefHeight(Math.min(movieListView.getItems().size() * 55, 150)); // Adjust the height as needed
-            movieListView.setPrefHeight(Math.min(movieListView.getItems().size() * 200, 100));// Adjust the height as needed
 
-
+            //movieListView.setPrefHeight(Math.min(movieListView.getItems().size() * 200, 100));// Adjust the height as needed
+            movieListView.setPrefHeight(movieListView.getItems().size() * 100 + 20);
             VBox.setVgrow(movieListView, Priority.NEVER);
+
 
         }
         ObservableList<Movie> items = movieListView.getItems();

@@ -48,27 +48,21 @@ public class HomeController implements Initializable {
     private boolean filtered = false;
     // automatically updates corresponding UI elements when underlying data changes
     FilteredList<Movie> filteredMovies;
-    //private Scene scene;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
 
 
         observableMovies.addAll(allMovies);// add dummy data to observable list
-        //observableMovies = observableMovies.stream().distinct().collect(Collectors.toCollection(FXCollections::observableArrayList));
+
 
 
 
         // initialize UI stuff
         movieListView.setItems(observableMovies);   // set data of observable list to list view
         movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
-        /*HBox contentHBox = new HBox(movieListView);
-        MovieCell.layout.getChildren().add(contentHBox);
-        if (movieListView.getItems().size() > 10) { // Beispiel: Zeigen Sie an, dass die contentHBox wächst, wenn mehr als 10 Elemente vorhanden sind
-            VBox.setVgrow(contentHBox, Priority.ALWAYS);
-        } else {
-            VBox.setVgrow(contentHBox, Priority.NEVER);
-        }*/
+
 
         // Initialize genre filter items
         List<String> genres = allMovies.stream().map(Movie::getGenre).distinct().collect(Collectors.toList());
@@ -112,12 +106,12 @@ public class HomeController implements Initializable {
             }else{
             applyFilters();
             }
-            System.out.println("Filter button clicked");
+            //System.out.println("Filter button clicked");
         });
 
         // Apply filters when pressing Enter in search field
         searchField.setOnAction(actionEvent -> {
-            System.out.println("Enter pressed");
+            //System.out.println("Enter pressed");
             //searchQuery();
 
 
@@ -137,7 +131,7 @@ public class HomeController implements Initializable {
 
 
 
-    private void applyFilters() {
+    public void applyFilters() {
 
         String query =  searchField.getText().toLowerCase();
         String selectedGenre = genreComboBox.getValue();
@@ -167,36 +161,24 @@ public class HomeController implements Initializable {
                        movie.getDescription().toLowerCase().matches(".*\\b" + query) && movie.getGenre().equalsIgnoreCase(selectedGenre));
 
 
+        //System.out.println(filteredMovies.size());
 
-        //observableMovies.removeAll();
-        //original(query.isEmpty() ||(movie.getTitle().toLowerCase().contains(query)) || movie.getDescription().toLowerCase().contains(query)) &&
-        //original(movie.getGenre().equals(selectedGenre) || selectedGenre == null || selectedGenre.isEmpty()));
-
-        //movieListView.setItems(filteredMovies);
 
         SortedList<Movie> sortedFilteredMovies = new SortedList<>(filteredMovies);
 
         sfm.clear();
         sfm.addAll(sortedFilteredMovies);
-        System.out.println(sfm.size());
+        //System.out.println(sfm.size());
 
-        //sortedFilteredMovies.comparatorProperty().bind(movieListView.comparatorProperty()); // Corrected line
-        //sortedFilteredMovies.setComparator(Comparator.comparing(Movie::getTitle));
 
-        //Comparator<Movie> comparator = Comparator.comparing(Movie::getTitle);
-        //sortedFilteredMovies.setComparator(comparator);
 
         movieListView.setItems(sortedFilteredMovies);
-        /*Set<Movie> uniqueMovies = new HashSet<>(movieListView.getItems());
-        List<Movie> uniqueMovieList = new ArrayList<>(uniqueMovies);
-        movieListView.setItems(FXCollections.observableArrayList(uniqueMovieList));*/
+
         if (movieListView.getItems().size() > 4) { // Beispiel: Zeigen Sie an, dass die contentHBox wächst, wenn mehr als 10 Elemente vorhanden sind
             VBox.setVgrow(movieListView, Priority.ALWAYS);
             //scene.getWindow().setHeight(890);
         } else if(movieListView.getItems().size() <= 4) {
-            //movieListView.setPrefHeight(Math.min(movieListView.getItems().size() * 55, 150)); // Adjust the height as needed
 
-            //movieListView.setPrefHeight(Math.min(movieListView.getItems().size() * 200, 100));// Adjust the height as needed
             movieListView.setPrefHeight(movieListView.getItems().size() * 100 + 20);
             VBox.setVgrow(movieListView, Priority.NEVER);
 
@@ -204,14 +186,14 @@ public class HomeController implements Initializable {
         }
         ObservableList<Movie> items = movieListView.getItems();
         for (Movie movie : items) {
-            System.out.println(movie.getTitle());
+            //System.out.println(movie.getTitle());
         }
         filtered = true;
 
 
     }
 
-    private void sortMovies(boolean ascending) {
+    public void sortMovies(boolean ascending) {
         Comparator<Movie> comparator = Comparator.comparing(Movie::getTitle);
         if (!ascending) {
             comparator = comparator.reversed();
@@ -228,22 +210,17 @@ public class HomeController implements Initializable {
         }
     }
 
-    /*private void sortFilteredMovies(boolean ascending) {
-        Comparator<Movie> comparator = Comparator.comparing(Movie::getTitle);
-        if (!ascending) {
-            comparator = comparator.reversed();
-        }
 
-
-        sfm.sort(comparator);
-        movieListView.setItems(sfm); // Update the ListView with sorted items
-    }*/
-    /*private void searchQuery() {
-        String query = searchField.getText().toLowerCase();
-        FilteredList<Movie> filteredMovies = observableMovies.filtered(movie -> movie.getTitle().toLowerCase().contains(query) || movie.getDescription().toLowerCase().contains(query));
-        movieListView.setItems(filteredMovies);
-    }*/
-
-
-
+    public void setObservableMovies(ObservableList<Movie> mockMovies) {
+        observableMovies.addAll(mockMovies);
     }
+    public FilteredList<Movie> getFilteredMovies() {
+        return filteredMovies;
+    }
+    public ObservableList<Movie> getSFMMovies() {
+        return sfm;
+    }
+public ObservableList<Movie> getObservableMovies() {
+        return observableMovies;
+    }
+}

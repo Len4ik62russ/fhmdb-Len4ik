@@ -50,6 +50,9 @@ public class Movie {
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
         // TODO add some dummy data here
+        /*
+        GitHubCopilot
+        */
         movies.add(new Movie("The Shawshank Redemption", "Two imprisoned", "Drama"));
         movies.add(new Movie("The Godfather", "The aging patriarch of an organized crime dynasty " +
                 "transfers control of his clandestine empire to his reluctant son.", "Drama"));
@@ -192,7 +195,9 @@ public class Movie {
         movies.add(new Movie("The Towering Inferno", "At the opening party of a colossal", "Adventure"));
         movies.add(new Movie("The Greatest Showman", "Get into your comfy clothes and bring out the popcorn because this family-friendly musical will keep everyone entertained", "Family"));
         movies.add(new Movie("E.T. The Extra-Terrestrial", "Steven Spielberg's classic sci-fi story of an extraterrestrial stranded on planet Earth is pure movie magic.", "Family"));
-
+/*
+End of GitHubCopilot
+ */
 
 
 

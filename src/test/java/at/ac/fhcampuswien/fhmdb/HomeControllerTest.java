@@ -29,7 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class HomeControllerTest {
 
     private HomeController controller;
-
+/*
+ChatGPT
+*/
     @BeforeAll
     static void initJFX() {
         System.setProperty("testfx.robot", "glass");
@@ -51,7 +53,9 @@ class HomeControllerTest {
             e.printStackTrace();
         }
     }
-
+/*
+End ChatGPT
+ */
     @BeforeEach
     void setUp() {
         controller = new HomeController();

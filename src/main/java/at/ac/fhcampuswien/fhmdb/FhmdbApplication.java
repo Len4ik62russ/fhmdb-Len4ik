@@ -28,3 +28,14 @@ public class FhmdbApplication extends Application {
         launch();
     }
 }
+
+
+    /*MovieAPI movieAPI = new MovieAPI();
+        try {
+                List<Movie> movies = movieAPI.getMovies("userinput", "ACTION");
+        for (Movie movie : movies) {
+        System.out.println(movie.getTitle());
+        }
+        } catch (IOException e) {
+        e.printStackTrace();
+        }*/

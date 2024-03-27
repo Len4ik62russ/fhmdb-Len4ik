@@ -1,5 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,12 +12,33 @@ public class Movie {
     }
 
     private String title;
-
+    private String description;
+    private String genre;
+    private String director;
+    private int releaseYear;
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+    public String getDirector() {
+        return director;
+    }
+    public void setDirector(String director) {
+        this.director = director;
+    }
     public void setDescription(String description) {
         this.description = description;
     }
 
-    private String description;
+    private List <String> mainCast;
+    public List<String> getMainCast() {
+        return mainCast;
+    }
+    public void setMainCast(List<String> mainCast) {
+        this.mainCast = mainCast;
+    }
 
 
 
@@ -24,7 +47,7 @@ public class Movie {
     }
 
     // TODO add more properties here
-    private String genre;
+
 
 
 
@@ -45,6 +68,64 @@ public class Movie {
 
     public String getGenre() {
         return genre;
+    }
+    @SerializedName("data")
+    private Data data;
+
+
+    public Data getData() {
+        return data;
+    }
+    public void setData(Data data) {
+        this.data = data;
+    }
+
+    public static class Data {
+        @SerializedName("id")
+        private List<ID> id;
+
+
+        public List<ID> getId() {
+            return id;
+        }
+        public void setId(List<ID> id) {
+            this.id = id;
+        }
+    }
+
+    public static class ID {
+        @SerializedName("stuff")
+        private Stuff stuff;
+        public Stuff getStuff() {
+            return stuff;
+        }
+        public void setStuff(Stuff stuff) {
+            this.stuff = stuff;
+        }
+
+        @SerializedName("values")
+        private List<List<Integer>> values;
+        public List<List<Integer>> getValues() {
+            return values;
+        }
+        public void setValues(List<List<Integer>> values) {
+            this.values = values;
+        }
+
+        @SerializedName("otherStuff")
+        private String otherStuff;
+        public String getOtherStuff() {
+            return otherStuff;
+        }
+        public void setOtherStuff(String otherStuff) {
+            this.otherStuff = otherStuff;
+        }
+
+
+    }
+
+    public static class Stuff {
+        // Felder und Methoden für Stuff
     }
 
     public static List<Movie> initializeMovies(){
@@ -198,26 +279,6 @@ public class Movie {
 /*
 End of GitHubCopilot
  */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         return movies;
     }
     @Override

@@ -8,6 +8,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
+import java.util.stream.Collectors;
+
 public class MovieCell extends ListCell<Movie> {
     private  final Label title = new Label();
     private  final Label detail = new Label();
@@ -35,8 +37,8 @@ public class MovieCell extends ListCell<Movie> {
                             : "No description available"
 
             );
-
-            genre.setText(movie.getGenre());
+            genre.setText(movie.getGenre().stream().collect(Collectors.joining(", ")));
+            //genre.setText(movie.getGenre());
             // color scheme
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");

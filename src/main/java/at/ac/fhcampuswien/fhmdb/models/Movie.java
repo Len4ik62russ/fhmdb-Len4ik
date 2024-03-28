@@ -1,21 +1,36 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Movie {
+public class Movie extends TypeAdapter<Movie> {
+    public Movie() {
+
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
     private String title;
     private String description;
-    private String genre;
+    private List<String> genres;
     private String director;
     private int releaseYear;
+    private double rating;
+    public double getRating() {
+        return rating;
+    }
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
     public int getReleaseYear() {
         return releaseYear;
     }
@@ -42,8 +57,8 @@ public class Movie {
 
 
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public void setGenre(List<String> genres) {
+        this.genres = genres;
     }
 
     // TODO add more properties here
@@ -51,10 +66,10 @@ public class Movie {
 
 
 
-    public Movie(String title, String description, String genre) {
+    public Movie(String title, String description, List<String> genres) {
         this.title = title;
         this.description = description;
-        this.genre = genre;
+        this.genres = genres;
     }
 
     public String getTitle() {
@@ -66,10 +81,11 @@ public class Movie {
         return description;
     }
 
-    public String getGenre() {
-        return genre;
+    public List<String> getGenre() {
+        return genres;
     }
-    @SerializedName("data")
+
+   /* @SerializedName("data")
     private Data data;
 
 
@@ -126,7 +142,38 @@ public class Movie {
 
     public static class Stuff {
         // Felder und Methoden für Stuff
+    }*/
+    @Override
+    public void write(JsonWriter out, Movie movie) throws IOException {
+        out.beginObject();
+        out.name("title").value(movie.getTitle());
+        // Add other fields here
+        out.endObject();
     }
+
+
+    @Override
+    public Movie read(JsonReader in) throws IOException {
+        in.beginObject();
+        String title = null;
+        String description = null;
+        String genre = null;
+        // Read other fields here
+        while (in.hasNext()) {
+            String name = in.nextName();
+            if (name.equals("title")) {
+                title = in.nextString();
+            } else if (name.equals("description")) {
+                description = in.nextString();
+            } else if (name.equals("genre")) {
+                genre = in.nextString();
+            }
+            // Handle other fields here
+        }
+        in.endObject();
+        return new Movie(title, description, genres); // Construct your Movie object here with all required parameters
+    }
+
 
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
@@ -134,7 +181,7 @@ public class Movie {
         /*
         GitHubCopilot
         */
-        movies.add(new Movie("The Shawshank Redemption", "Two imprisoned", "Drama"));
+        /*movies.add(new Movie("The Shawshank Redemption", "Two imprisoned", "Drama"));
         movies.add(new Movie("The Godfather", "The aging patriarch of an organized crime dynasty " +
                 "transfers control of his clandestine empire to his reluctant son.", "Drama"));
 
@@ -275,7 +322,7 @@ public class Movie {
         movies.add(new Movie("The Poseidon Adventure", "A group of passengers struggle to survive and escape", "Adventure"));
         movies.add(new Movie("The Towering Inferno", "At the opening party of a colossal", "Adventure"));
         movies.add(new Movie("The Greatest Showman", "Get into your comfy clothes and bring out the popcorn because this family-friendly musical will keep everyone entertained", "Family"));
-        movies.add(new Movie("E.T. The Extra-Terrestrial", "Steven Spielberg's classic sci-fi story of an extraterrestrial stranded on planet Earth is pure movie magic.", "Family"));
+        movies.add(new Movie("E.T. The Extra-Terrestrial", "Steven Spielberg's classic sci-fi story of an extraterrestrial stranded on planet Earth is pure movie magic.", "Family"));*/
 /*
 End of GitHubCopilot
  */
@@ -287,13 +334,13 @@ End of GitHubCopilot
         if (o == null || getClass() != o.getClass()) return false;
         Movie movie = (Movie) o;
         return Objects.equals(title, movie.title) &&
-                Objects.equals(genre, movie.genre) &&
+                Objects.equals(genres, movie.genres) &&
                 Objects.equals(description, movie.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, genre, description);
+        return Objects.hash(title, genres, description);
     }
 
 

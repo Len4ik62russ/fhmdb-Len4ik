@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,15 +54,29 @@ public class HomeController implements Initializable {
     private boolean filtered = false;
     // automatically updates corresponding UI elements when underlying data changes
     FilteredList<Movie> filteredMovies;
-
+    FilteredList<Movie> filteredMovies2;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        MovieAPI movieAPI = new MovieAPI();
+        long count = 0;
+        List<Movie> movies = null;
+        try {
+            movies = movieAPI.getMovies(null, null, null, 0, 0.0);
+            // Verwenden von Streams, um über die Filme zu iterieren und deren Titel auszugeben
+            movies.stream()
+                    .forEach(movie -> System.out.println(movie.getTitle() + " " + movie.getRating()));
 
 
 
-        observableMovies.addAll(allMovies);// add dummy data to observable list
+            // Zählen der Filme mit der count()-Methode
+            count = movies.stream().count();
+            System.out.println("Number of movies: " + count);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        observableMovies.addAll(movies);// add dummy data to observable list
 
 
         // initialize UI stuff
@@ -70,29 +85,37 @@ public class HomeController implements Initializable {
 
 
         // Initialize genre filter items
-        List<String> genres = allMovies.stream().map(Movie::getGenre).distinct().collect(Collectors.toList());
-        genreComboBox.getItems().addAll(genres);
+        //List<String> genresss = movies.stream().map(Movie::getGenre).distinct().collect(Collectors.toList());
+        List<String> genresss = movies.stream()
+                .flatMap(movie -> movie.getGenre().stream()) // Vereint alle Genre-Listen in einen Stream
+                .distinct() // Entfernt Duplikate
+                .collect(Collectors.toList());
+        genreComboBox.getItems().addAll(genresss);
         genreComboBox.getItems().add("Without genre");
 
         // TODO add genre filter items with genreComboBox.getItems().addAll(...)
         genreComboBox.setPromptText("Filter by Genre");
         releaseYearComboBox.setPromptText("Filter by Release Year");
-        releaseYearComboBox.getItems().addAll("2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000", "1999", "1998", "1997", "1996", "1995", "1994", "1993", "1992", "1991", "1990", "1989", "1988", "1987", "1986", "1985", "1984", "1983", "1982", "1981", "1980", "1979", "1978", "1977", "1976", "1975", "1974", "1973", "1972", "1971", "1970", "1969", "1968", "1967", "1966", "1965", "1964", "1963", "1962", "1961", "1960", "1959", "1958", "1957", "1956", "1955", "1954", "1953", "1952", "1951", "1950", "1949", "1948", "1947", "1946", "1945", "1944", "1943", "1942", "1941", "1940", "1939", "1938", "1937", "1936", "1935", "1934", "1933", "1932", "1931", "1930", "1929", "1928", "1927", "1926", "1925", "1924", "1923", "1922", "1921", "1920", "1919", "1918", "1917", "1916", "1915", "1914", "1913", "1912", "1911", "1910", "1909", "1908", "1907", "1906", "1905", "1904", "1903", "1902", "1901", "1900");
+
+        List<Integer> releaseYears = movies.stream().map(Movie::getReleaseYear).distinct().collect(Collectors.toList());
+        releaseYearComboBox.getItems().addAll(releaseYears.stream().map(Object::toString).collect(Collectors.toList()));
+        releaseYearComboBox.getItems().add("Without release year");
         ratingComboBox.setPromptText("Filter by Rating");
-        ratingComboBox.getItems().addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+        List<Double> ratings = movies.stream().map(Movie::getRating).distinct().collect(Collectors.toList());
+        ratingComboBox.getItems().addAll(ratings);
+        ratingComboBox.getItems().add("Without rating");
+
 
 
         // TODO add event handlers to buttons and call the regarding methods
         // either set event handlers in the fxml file (onAction) or add them here
         // Sort button example:
         sortBtn.setOnAction(actionEvent -> {
-            if(sortBtn.getText().equals("Sort (asc)")) {
+            if (sortBtn.getText().equals("Sort (asc)")) {
                 // TODO sort observableMovies ascending
                 sortBtn.setText("Sort (desc)");
 
-                    sortMovies(true);
-
-
+                sortMovies(true);
 
 
             } else {
@@ -106,13 +129,23 @@ public class HomeController implements Initializable {
         filterBtn.setOnAction(actionEvent -> {
 
 
-            if(genreComboBox.getValue() == "Without genre"){
+            if (genreComboBox.getValue() == "Without genre") {
                 genreComboBox.setValue(null);
                 genreComboBox.setPromptText("Filter by Genre");
                 movieListView.setItems(observableMovies);
                 applyFilters();
-            }else{
-            applyFilters();
+            }else if(releaseYearComboBox.getValue() == "Without release year") {
+                releaseYearComboBox.setValue(null);
+                releaseYearComboBox.setPromptText("Filter by Release Year");
+                movieListView.setItems(observableMovies);
+                applyFilters();
+            } else if(ratingComboBox.getValue() == "Without rating") {
+                ratingComboBox.setValue(null);
+                ratingComboBox.setPromptText("Filter by Rating");
+                movieListView.setItems(observableMovies);
+                applyFilters();
+            } else {
+                applyFilters();
             }
             //System.out.println("Filter button clicked");
         });
@@ -123,13 +156,22 @@ public class HomeController implements Initializable {
             //searchQuery();
 
 
-
-            if(genreComboBox.getValue() == "Without genre"){
+            if (genreComboBox.getValue() == "Without genre") {
                 genreComboBox.setValue(null);
                 genreComboBox.setPromptText("Filter by Genre");
                 movieListView.setItems(observableMovies);
                 applyFilters();
-            }else {
+            }else if(releaseYearComboBox.getValue() == "Without release year") {
+                releaseYearComboBox.setValue(null);
+                releaseYearComboBox.setPromptText("Filter by Release Year");
+                movieListView.setItems(observableMovies);
+                applyFilters();
+            } else if(ratingComboBox.getValue() == "Without rating") {
+                ratingComboBox.setValue(null);
+                ratingComboBox.setPromptText("Filter by Rating");
+                movieListView.setItems(observableMovies);
+                applyFilters();
+            } else {
 
                 applyFilters();
             }
@@ -141,38 +183,65 @@ public class HomeController implements Initializable {
 
     public void applyFilters() {
 
-        String query =  searchField.getText().toLowerCase();
+        String query = searchField.getText().toLowerCase();
         String selectedGenre = genreComboBox.getValue();
+        int selectedReleaseYear;
+        double selectedRating;
 
         filteredMovies = observableMovies.filtered(movie ->
 
-               movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(".*\\b" + query + "\\b.*") && movie.getGenre().equalsIgnoreCase(selectedGenre)
-                       || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(query + "\\b.*") && movie.getGenre().equalsIgnoreCase(selectedGenre)
-                       || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(".*\\b" + query) && movie.getGenre().equalsIgnoreCase(selectedGenre)
+                movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(".*\\b" + query + "\\b.*") && movie.getGenre().stream().anyMatch(genre -> genre.equalsIgnoreCase(selectedGenre))
+                        || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(query + "\\b.*") && movie.getGenre().stream().anyMatch(genre -> genre.equalsIgnoreCase(selectedGenre))
+                        || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(".*\\b" + query) && movie.getGenre().stream().anyMatch(genre -> genre.equalsIgnoreCase(selectedGenre))
 
-                       || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(".*\\b" + query + "\\b.*") && selectedGenre == null
-                       || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(".*\\b" + query) && selectedGenre == null
-                       || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(query + "\\b.*") && selectedGenre == null
-                       ||
-                       movie.getDescription().toLowerCase().contains(query) &&
-                       movie.getDescription().toLowerCase().matches(".*\\b" + query + "\\b.*") && selectedGenre == null
-                       ||  movie.getDescription().toLowerCase().contains(query) &&
-                       movie.getDescription().toLowerCase().matches(query + "\\b.*") && selectedGenre == null
-                       || movie.getDescription().toLowerCase().contains(query) &&
-                       movie.getDescription().toLowerCase().matches(".*\\b" + query) && selectedGenre == null
-                       || query.isEmpty() && movie.getGenre().equalsIgnoreCase(selectedGenre) ||
-                       movie.getDescription().toLowerCase().contains(query) &&
-                               movie.getDescription().toLowerCase().matches(".*\\b" + query + "\\b.*") && movie.getGenre().equalsIgnoreCase(selectedGenre)
-                       || movie.getDescription().toLowerCase().contains(query) &&
-                       movie.getDescription().toLowerCase().matches(query + "\\b.*") && movie.getGenre().equalsIgnoreCase(selectedGenre)
-                       ||  movie.getDescription().toLowerCase().contains(query) &&
-                       movie.getDescription().toLowerCase().matches(".*\\b" + query) && movie.getGenre().equalsIgnoreCase(selectedGenre));
+                        || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(".*\\b" + query + "\\b.*") && selectedGenre == null
+                        || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(".*\\b" + query) && selectedGenre == null
+                        || movie.getTitle().toLowerCase().contains(query) && movie.getTitle().toLowerCase().matches(query + "\\b.*") && selectedGenre == null
+                        ||
+                        movie.getDescription().toLowerCase().contains(query) &&
+                                movie.getDescription().toLowerCase().matches(".*\\b" + query + "\\b.*") && selectedGenre == null
+                        || movie.getDescription().toLowerCase().contains(query) &&
+                        movie.getDescription().toLowerCase().matches(query + "\\b.*") && selectedGenre == null
+                        || movie.getDescription().toLowerCase().contains(query) &&
+                        movie.getDescription().toLowerCase().matches(".*\\b" + query) && selectedGenre == null
+                        || query.isEmpty() && movie.getGenre().stream().anyMatch(genre -> genre.equalsIgnoreCase(selectedGenre)) ||
+                        movie.getDescription().toLowerCase().contains(query) &&
+                                movie.getDescription().toLowerCase().matches(".*\\b" + query + "\\b.*") && movie.getGenre().stream().anyMatch(genre -> genre.equalsIgnoreCase(selectedGenre))
+                        || movie.getDescription().toLowerCase().contains(query) &&
+                        movie.getDescription().toLowerCase().matches(query + "\\b.*") && movie.getGenre().stream().anyMatch(genre -> genre.equalsIgnoreCase(selectedGenre))
+                        || movie.getDescription().toLowerCase().contains(query) &&
+                        movie.getDescription().toLowerCase().matches(".*\\b" + query) && movie.getGenre().stream().anyMatch(genre -> genre.equalsIgnoreCase(selectedGenre)));
+
+        if (releaseYearComboBox.getValue() == null && ratingComboBox.getValue() == null) {
+            filteredMovies2 = filteredMovies;
+        } else if (releaseYearComboBox.getValue() == null && ratingComboBox.getValue() != null) {
+            selectedRating = Double.parseDouble( ratingComboBox.getValue().toString());
+            filteredMovies2 = filteredMovies.filtered(movie -> movie.getRating() >= selectedRating);
+        } else if (releaseYearComboBox.getValue() != null && ratingComboBox.getValue() == null) {
+            selectedReleaseYear = Integer.parseInt(releaseYearComboBox.getValue());
+            filteredMovies2 = filteredMovies.filtered(movie -> movie.getReleaseYear() == selectedReleaseYear);
+        } else if (releaseYearComboBox.getValue() != null && ratingComboBox.getValue() != null){
+            selectedReleaseYear = Integer.parseInt(releaseYearComboBox.getValue());
+            selectedRating = Double.parseDouble( ratingComboBox.getValue().toString());
+            filteredMovies2 = filteredMovies.filtered(movie -> movie.getReleaseYear() == selectedReleaseYear && movie.getRating() >= selectedRating);
+        }
 
 
+
+
+        /*if (releaseYearComboBox.getValue() == null && ratingComboBox.getValue() == null) {
+            filteredMovies2 = filteredMovies;
+        } else if (releaseYearComboBox.getValue() == null && ratingComboBox.getValue() != null) {
+            filteredMovies2 = filteredMovies.filtered(movie -> movie.getRating() >= selectedRating);
+        } else if (releaseYearComboBox.getValue() != null && ratingComboBox.getValue() == null) {
+            filteredMovies2 = filteredMovies.filtered(movie -> movie.getReleaseYear() == selectedReleaseYear);
+        } else if (releaseYearComboBox.getValue() != null && ratingComboBox.getValue() != null){
+            filteredMovies2 = filteredMovies.filtered(movie -> movie.getReleaseYear() == selectedReleaseYear && movie.getRating() >= selectedRating);
+    }*/
         //System.out.println(filteredMovies.size());
 
 
-        SortedList<Movie> sortedFilteredMovies = new SortedList<>(filteredMovies);
+        SortedList<Movie> sortedFilteredMovies = new SortedList<>(filteredMovies2);
 
         sfm.clear();
         sfm.addAll(sortedFilteredMovies);

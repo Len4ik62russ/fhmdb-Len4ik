@@ -2,6 +2,7 @@ package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
 
@@ -14,14 +15,16 @@ public class MovieAPI {
     private static final String USER_AGENT = "User-Agent http.agent";
 
     private OkHttpClient client;
-    private Gson gson;
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Movie.class, new Movie())
+            .create();
 
     public MovieAPI() {
         this.client = new OkHttpClient();
         this.gson = new Gson();
     }
 
-    public List<Movie> getMovies(String query, String genre) throws IOException {
+    public List<Movie> getMovies(String query, String description, String genre, int releaseYear, double ratingFrom) throws IOException {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
         if (query != null) {
             urlBuilder.addQueryParameter("query", query);
@@ -40,7 +43,9 @@ public class MovieAPI {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
             Type listType = new TypeToken<List<Movie>>(){}.getType();
+
             return gson.fromJson(response.body().string(), listType);
+
         }
     }
 

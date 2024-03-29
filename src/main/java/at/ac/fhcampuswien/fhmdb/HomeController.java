@@ -287,24 +287,28 @@ public class HomeController implements Initializable {
         }
     }
     public String getMostPopularActor(List<Movie> movies) {
-        // Zählen Sie die Häufigkeit jedes Schauspielers im mainCast jedes Films
+        if (movies == null || movies.isEmpty()) {
+            return null; // or return a default value if appropriate
+        }
+
+        // Häufigkeit jedes Schauspielers im mainCast jedes Films
         Map<String, Long> actorCounts = movies.stream()
                 .flatMap(movie -> movie.getMainCast().stream())
                 .collect(Collectors.groupingBy(actor -> actor, Collectors.counting()));
 
-        // Finden Sie den Schauspieler mit der höchsten Häufigkeit
+        // Schauspieler mit der höchsten Häufigkeit
         return actorCounts.entrySet().stream()
                 .max((entry1, entry2) -> Long.compare(entry1.getValue(), entry2.getValue()))
                 .map(Map.Entry::getKey)
                 .orElse(null); // Rückgabe null, wenn keine Filme vorhanden sind
     }
     public int getLongestMovieTitle(List<Movie> movies) {
-        // Finden Sie den längsten Titel
+        // den längsten Titel
         Optional<String> longestTitle = movies.stream()
                 .map(Movie::getTitle) // Angenommen, es gibt eine Methode getTitle() in der Movie-Klasse
                 .max(Comparator.comparingInt(String::length));
 
-        // Geben Sie die Länge des längsten Titels zurück, oder 0, wenn keine Filme vorhanden sind
+        // Länge des längsten Titels zurück, oder 0, wenn keine Filme vorhanden sind
         return longestTitle.map(String::length).orElse(0);
     }
     public long countMoviesFrom(List<Movie> movies, String director) {

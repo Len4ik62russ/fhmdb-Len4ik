@@ -66,10 +66,14 @@ public class Movie extends TypeAdapter<Movie> {
 
 
 
-    public Movie(String title, String description, List<String> genres) {
+    public Movie(String title, String description, List<String> genres, int releaseYear, double rating, String director, List<String> mainCast) {
         this.title = title;
         this.description = description;
         this.genres = genres;
+        this.releaseYear = releaseYear;
+        this.rating = rating;
+        this.director = director;
+        this.mainCast = mainCast;
     }
 
     public String getTitle() {
@@ -171,7 +175,7 @@ public class Movie extends TypeAdapter<Movie> {
             // Handle other fields here
         }
         in.endObject();
-        return new Movie(title, description, genres); // Construct your Movie object here with all required parameters
+        return new Movie(title, description, genres, releaseYear, rating, director, mainCast);
     }
 
 
@@ -335,12 +339,13 @@ End of GitHubCopilot
         Movie movie = (Movie) o;
         return Objects.equals(title, movie.title) &&
                 Objects.equals(genres, movie.genres) &&
-                Objects.equals(description, movie.description);
+                Objects.equals(description, movie.description) &&
+                getReleaseYear() == movie.getReleaseYear();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, genres, description);
+        return Objects.hash(title, genres, description, getReleaseYear());
     }
 
 

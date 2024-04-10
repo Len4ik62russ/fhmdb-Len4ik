@@ -13,16 +13,43 @@ public class Movie extends TypeAdapter<Movie> {
     public Movie() {
 
     }
-
+    private String title;
     public void setTitle(String title) {
         this.title = title;
     }
+    public String getTitle() {return title;}
 
-    private String title;
+
     private String description;
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     private List<String> genres;
+    public List<String> getGenre() {
+        return genres;
+    }
+    public void setGenre(List<String> genres) {
+        this.genres = genres;
+    }
     private String director;
+    public String getDirector() {
+        return director;
+    }
+    public void setDirector(String director) {
+        this.director = director;
+    }
     private int releaseYear;
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
     private double rating;
     public double getRating() {
         return rating;
@@ -30,23 +57,6 @@ public class Movie extends TypeAdapter<Movie> {
     public void setRating(double rating) {
         this.rating = rating;
     }
-
-    public int getReleaseYear() {
-        return releaseYear;
-    }
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
-    }
-    public String getDirector() {
-        return director;
-    }
-    public void setDirector(String director) {
-        this.director = director;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     private List <String> mainCast;
     public List<String> getMainCast() {
         return mainCast;
@@ -55,16 +65,7 @@ public class Movie extends TypeAdapter<Movie> {
         this.mainCast = mainCast;
     }
 
-
-
-    public void setGenre(List<String> genres) {
-        this.genres = genres;
-    }
-
     // TODO add more properties here
-
-
-
 
     public Movie(String title, String description, List<String> genres, int releaseYear, double rating, String director, List<String> mainCast) {
         this.title = title;
@@ -76,107 +77,85 @@ public class Movie extends TypeAdapter<Movie> {
         this.mainCast = mainCast;
     }
 
-    public String getTitle() {
-
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<String> getGenre() {
-        return genres;
-    }
-
-   /* @SerializedName("data")
-    private Data data;
 
 
-    public Data getData() {
-        return data;
-    }
-    public void setData(Data data) {
-        this.data = data;
-    }
-
-    public static class Data {
-        @SerializedName("id")
-        private List<ID> id;
 
 
-        public List<ID> getId() {
-            return id;
-        }
-        public void setId(List<ID> id) {
-            this.id = id;
-        }
-    }
 
-    public static class ID {
-        @SerializedName("stuff")
-        private Stuff stuff;
-        public Stuff getStuff() {
-            return stuff;
-        }
-        public void setStuff(Stuff stuff) {
-            this.stuff = stuff;
-        }
+//Chat GPT-3
 
-        @SerializedName("values")
-        private List<List<Integer>> values;
-        public List<List<Integer>> getValues() {
-            return values;
-        }
-        public void setValues(List<List<Integer>> values) {
-            this.values = values;
-        }
-
-        @SerializedName("otherStuff")
-        private String otherStuff;
-        public String getOtherStuff() {
-            return otherStuff;
-        }
-        public void setOtherStuff(String otherStuff) {
-            this.otherStuff = otherStuff;
-        }
-
-
-    }
-
-    public static class Stuff {
-        // Felder und Methoden für Stuff
-    }*/
     @Override
     public void write(JsonWriter out, Movie movie) throws IOException {
         out.beginObject();
         out.name("title").value(movie.getTitle());
-        // Add other fields here
+        out.name("description").value(movie.getDescription());
+        out.name("genres");
+        out.beginArray();
+        for (String genre : movie.getGenre()) {
+            out.value(genre);
+        }
+        out.endArray();
+        out.name("releaseYear").value(movie.getReleaseYear());
+        out.name("rating").value(movie.getRating());
+        out.name("director").value(movie.getDirector());
+        out.name("mainCast");
+        out.beginArray();
+        for (String cast : movie.getMainCast()) {
+            out.value(cast);
+        }
+        out.endArray();
+
+
         out.endObject();
     }
 
 
     @Override
     public Movie read(JsonReader in) throws IOException {
+        // Read the JSON object
         in.beginObject();
+        // Read the fields
         String title = null;
         String description = null;
-        String genre = null;
-        // Read other fields here
+
+        List<String> genres = new ArrayList<>();
+        int releaseYear = 0;
+        double rating = 0.0;
+        String director = null;
+        List<String> mainCast = new ArrayList<>();
+
+
         while (in.hasNext()) {
             String name = in.nextName();
             if (name.equals("title")) {
                 title = in.nextString();
             } else if (name.equals("description")) {
                 description = in.nextString();
-            } else if (name.equals("genre")) {
-                genre = in.nextString();
+            } else if (name.equals("genres")) {
+                in.beginArray();
+                while (in.hasNext()) {
+                    genres.add(in.nextString());
+                }
+                in.endArray();
+            } else if (name.equals("releaseYear")) {
+                releaseYear = in.nextInt();
+            } else if (name.equals("rating")) {
+                rating = in.nextDouble();
+            } else if (name.equals("director")) {
+                director = in.nextString();
+            } else if (name.equals("mainCast")) {
+                in.beginArray();
+                while (in.hasNext()) {
+                    mainCast.add(in.nextString());
+                }
+                in.endArray();
             }
-            // Handle other fields here
+
         }
         in.endObject();
         return new Movie(title, description, genres, releaseYear, rating, director, mainCast);
     }
+    //Ende Chat GPT-3
 
 
     public static List<Movie> initializeMovies(){

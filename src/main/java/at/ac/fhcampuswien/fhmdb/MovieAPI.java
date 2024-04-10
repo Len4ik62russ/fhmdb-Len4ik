@@ -49,7 +49,7 @@ public class MovieAPI {
         }
     }
 
-    public Movie getMovieById(int id) throws IOException {
+    public Movie getMovieById(String id) throws IOException {
         HttpUrl url = HttpUrl.parse(BASE_URL + "/" + id).newBuilder().build();
 
         Request request = new Request.Builder()

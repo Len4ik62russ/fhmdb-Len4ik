@@ -52,23 +52,35 @@ public class HomeController implements Initializable {
     private ObservableList<Movie> sfm = FXCollections.observableArrayList();
 
     private boolean filtered = false;
-    // automatically updates corresponding UI elements when underlying data changes
+
     FilteredList<Movie> filteredMovies;
     FilteredList<Movie> filteredMovies2;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         MovieAPI movieAPI = new MovieAPI();
+
+        String movieId = "8ca193d8-7879-42ed-820e-6230b52746a3";
+
+        try {
+            Movie movie = movieAPI.getMovieById(movieId);
+
+            System.out.println("Gefundener Film: " + movie.getTitle());
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+
         long count = 0;
         List<Movie> movies = null;
         try {
             movies = movieAPI.getMovies(null, null, null, 0, 0.0);
-            // Verwenden von Streams, um über die Filme zu iterieren und deren Titel auszugeben
+
             movies.stream()
                     .forEach(movie -> System.out.println(movie.getTitle() + " " + movie.getRating()));
 
 
 
-            // Zählen der Filme mit der count()-Methode
+
             count = movies.stream().count();
             System.out.println("Number of movies: " + count);
 
@@ -76,7 +88,7 @@ public class HomeController implements Initializable {
             e.printStackTrace();
         }
 
-        observableMovies.addAll(movies);// add dummy data to observable list
+        observableMovies.addAll(movies);
 
 
         // initialize UI stuff
@@ -85,7 +97,7 @@ public class HomeController implements Initializable {
 
 
         // Initialize genre filter items
-        //List<String> genresss = movies.stream().map(Movie::getGenre).distinct().collect(Collectors.toList());
+
         List<String> genresss = movies.stream()
                 .flatMap(movie -> movie.getGenre().stream()) // Vereint alle Genre-Listen in einen Stream
                 .distinct() // Entfernt Duplikate
@@ -147,13 +159,12 @@ public class HomeController implements Initializable {
             } else {
                 applyFilters();
             }
-            //System.out.println("Filter button clicked");
+
         });
 
         // Apply filters when pressing Enter in search field
         searchField.setOnAction(actionEvent -> {
-            //System.out.println("Enter pressed");
-            //searchQuery();
+
 
 
             if (genreComboBox.getValue() == "Without genre") {
@@ -229,31 +240,22 @@ public class HomeController implements Initializable {
 
 
 
-        /*if (releaseYearComboBox.getValue() == null && ratingComboBox.getValue() == null) {
-            filteredMovies2 = filteredMovies;
-        } else if (releaseYearComboBox.getValue() == null && ratingComboBox.getValue() != null) {
-            filteredMovies2 = filteredMovies.filtered(movie -> movie.getRating() >= selectedRating);
-        } else if (releaseYearComboBox.getValue() != null && ratingComboBox.getValue() == null) {
-            filteredMovies2 = filteredMovies.filtered(movie -> movie.getReleaseYear() == selectedReleaseYear);
-        } else if (releaseYearComboBox.getValue() != null && ratingComboBox.getValue() != null){
-            filteredMovies2 = filteredMovies.filtered(movie -> movie.getReleaseYear() == selectedReleaseYear && movie.getRating() >= selectedRating);
-    }*/
-        //System.out.println(filteredMovies.size());
+
 
 
         SortedList<Movie> sortedFilteredMovies = new SortedList<>(filteredMovies2);
 
         sfm.clear();
         sfm.addAll(sortedFilteredMovies);
-        //System.out.println(sfm.size());
+
 
 
 
         movieListView.setItems(sortedFilteredMovies);
 
-        if (movieListView.getItems().size() > 4) { // Beispiel: Zeigen Sie an, dass die contentHBox wächst, wenn mehr als 10 Elemente vorhanden sind
+        if (movieListView.getItems().size() > 4) { // Set the height of the ListView to 4 items
             VBox.setVgrow(movieListView, Priority.ALWAYS);
-            //scene.getWindow().setHeight(890);
+
         } else if(movieListView.getItems().size() <= 4) {
 
             movieListView.setPrefHeight(movieListView.getItems().size() * 100 + 20);
@@ -291,7 +293,7 @@ public class HomeController implements Initializable {
             return null; // or return a default value if appropriate
         }
 
-        // Häufigkeit jedes Schauspielers im mainCast jedes Films
+
         Map<String, Long> actorCounts = movies.stream()
                 .flatMap(movie -> movie.getMainCast().stream())
                 .collect(Collectors.groupingBy(actor -> actor, Collectors.counting()));
@@ -305,22 +307,22 @@ public class HomeController implements Initializable {
     public int getLongestMovieTitle(List<Movie> movies) {
         // den längsten Titel
         Optional<String> longestTitle = movies.stream()
-                .map(Movie::getTitle) // Angenommen, es gibt eine Methode getTitle() in der Movie-Klasse
+                .map(Movie::getTitle)
                 .max(Comparator.comparingInt(String::length));
 
         // Länge des längsten Titels zurück, oder 0, wenn keine Filme vorhanden sind
         return longestTitle.map(String::length).orElse(0);
     }
     public long countMoviesFrom(List<Movie> movies, String director) {
-        // Filtern Sie die Filme nach dem Regisseur und zählen Sie die Anzahl der Filme
+        // nach dem Regisseur
         long count = movies.stream()
-                .filter(movie -> director.equals(movie.getDirector())) // Angenommen, es gibt eine Methode getDirector() in der Movie-Klasse
+                .filter(movie -> director.equals(movie.getDirector()))
                 .count();
 
         return count;
     }
     public List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear) {
-        // Filtern Sie die Filme nach dem Veröffentlichungsjahr
+        //  nach dem Veröffentlichungsjahr
         List<Movie> filteredMovies = movies.stream()
                 .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
                 .collect(Collectors.toList());
@@ -339,4 +341,5 @@ public class HomeController implements Initializable {
 public ObservableList<Movie> getObservableMovies() {
         return observableMovies;
     }
+
 }

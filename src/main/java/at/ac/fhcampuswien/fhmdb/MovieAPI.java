@@ -24,13 +24,19 @@ public class MovieAPI {
         this.gson = new Gson();
     }
 
-    public List<Movie> getMovies(String query, String description, String genre, int releaseYear, double ratingFrom) throws IOException {
+    public List<Movie> getMovies(String query, String description, String genres, int releaseYear, double ratingFrom, String directors, List<String> mainCast) throws IOException {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
         if (query != null) {
             urlBuilder.addQueryParameter("query", query);
         }
-        if (genre != null) {
-            urlBuilder.addQueryParameter("genre", genre);
+        if (genres != null) {
+            urlBuilder.addQueryParameter("genre", genres);
+        }
+        if(releaseYear != 0) {
+            urlBuilder.addQueryParameter("releaseYear", String.valueOf(releaseYear));
+        }
+        if(ratingFrom != 0) {
+            urlBuilder.addQueryParameter("ratingFrom", String.valueOf(ratingFrom));
         }
         HttpUrl url = urlBuilder.build();
 
@@ -47,6 +53,7 @@ public class MovieAPI {
             return gson.fromJson(response.body().string(), listType);
 
         }
+
     }
 
     public Movie getMovieById(String id) throws IOException {

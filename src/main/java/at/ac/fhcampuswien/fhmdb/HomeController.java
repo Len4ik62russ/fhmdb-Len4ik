@@ -73,10 +73,10 @@ public class HomeController implements Initializable {
         long count = 0;
         List<Movie> movies = null;
         try {
-            movies = movieAPI.getMovies(null, null, null, 0, 0.0);
+            movies = movieAPI.getMovies(null, null, null, 0, 0.0, null, null);
 
             movies.stream()
-                    .forEach(movie -> System.out.println(movie.getTitle() + " " + movie.getRating()));
+                    .forEach(movie -> System.out.println(movie.getTitle() + " " + movie.getMainCast() + " " + movie.getDirector() + " " + movie.getGenre() + " " + movie.getRating() + " " + movie.getReleaseYear()));
 
 
 
@@ -313,10 +313,10 @@ public class HomeController implements Initializable {
         // Länge des längsten Titels zurück, oder 0, wenn keine Filme vorhanden sind
         return longestTitle.map(String::length).orElse(0);
     }
-    public long countMoviesFrom(List<Movie> movies, String director) {
+    public long countMoviesFrom(List<Movie> movies, List<String> directors) {
         // nach dem Regisseur
         long count = movies.stream()
-                .filter(movie -> director.equals(movie.getDirector()))
+                .filter(movie -> directors.equals(movie.getDirector()))
                 .count();
 
         return count;

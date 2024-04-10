@@ -35,12 +35,12 @@ public class Movie extends TypeAdapter<Movie> {
     public void setGenre(List<String> genres) {
         this.genres = genres;
     }
-    private String director;
-    public String getDirector() {
-        return director;
+    private List<String> directors;
+    public List<String> getDirector() {
+        return directors;
     }
-    public void setDirector(String director) {
-        this.director = director;
+    public void setDirector(List<String> directors) {
+        this.directors = directors;
     }
     private int releaseYear;
     public int getReleaseYear() {
@@ -67,13 +67,13 @@ public class Movie extends TypeAdapter<Movie> {
 
     // TODO add more properties here
 
-    public Movie(String title, String description, List<String> genres, int releaseYear, double rating, String director, List<String> mainCast) {
+    public Movie(String title, String description, List<String> genres, int releaseYear, double rating, List<String> directors, List<String> mainCast) {
         this.title = title;
         this.description = description;
         this.genres = genres;
         this.releaseYear = releaseYear;
         this.rating = rating;
-        this.director = director;
+        this.directors = directors;
         this.mainCast = mainCast;
     }
 
@@ -97,7 +97,12 @@ public class Movie extends TypeAdapter<Movie> {
         out.endArray();
         out.name("releaseYear").value(movie.getReleaseYear());
         out.name("rating").value(movie.getRating());
-        out.name("director").value(movie.getDirector());
+        out.name("directors");
+        out.beginArray();
+        for (String directors : movie.getDirector()) {
+            out.value(directors);
+        }
+        out.endArray();
         out.name("mainCast");
         out.beginArray();
         for (String cast : movie.getMainCast()) {
@@ -121,7 +126,7 @@ public class Movie extends TypeAdapter<Movie> {
         List<String> genres = new ArrayList<>();
         int releaseYear = 0;
         double rating = 0.0;
-        String director = null;
+        List<String> directors = new ArrayList<>();
         List<String> mainCast = new ArrayList<>();
 
 
@@ -141,8 +146,12 @@ public class Movie extends TypeAdapter<Movie> {
                 releaseYear = in.nextInt();
             } else if (name.equals("rating")) {
                 rating = in.nextDouble();
-            } else if (name.equals("director")) {
-                director = in.nextString();
+            } else if (name.equals("directors")) {
+                in.beginArray();
+                while (in.hasNext()) {
+                    directors.add(in.nextString());
+                }
+                in.endArray();
             } else if (name.equals("mainCast")) {
                 in.beginArray();
                 while (in.hasNext()) {
@@ -153,7 +162,7 @@ public class Movie extends TypeAdapter<Movie> {
 
         }
         in.endObject();
-        return new Movie(title, description, genres, releaseYear, rating, director, mainCast);
+        return new Movie(title, description, genres, releaseYear, rating, directors, mainCast);
     }
     //Ende Chat GPT-3
 

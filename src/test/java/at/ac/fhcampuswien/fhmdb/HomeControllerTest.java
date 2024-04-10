@@ -77,13 +77,13 @@ End ChatGPT
         controller.movieListView = movieListView;
         // die Filme im Controller
         List<Movie> mockMovies = Arrays.asList(
-                new Movie("Movie1", "Description1", Arrays.asList("Action", "Drama", "Thriller"), 2002, 9.0, "Tarantino1", Arrays.asList("Actor1") ),
-                new Movie("Movie222", "Description2", Arrays.asList("Action", "Comedy"), 2010, 7.6, "Tarantino1", Arrays.asList("Actor1") ),
-                new Movie("Movie33333", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, "Tarantino1", Arrays.asList("Actor1") ),
-                new Movie("Movie4444444", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, "Tarantino2", Arrays.asList("Actor1") ),
-                new Movie("Movie55555555", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, "Tarantino2", Arrays.asList("Actor2") ),
-                new Movie("Movie6666666666", "Description6", Arrays.asList("History", "Drama"), 1960, 8.7, "Tarantino3", Arrays.asList("Actor3") ),
-                new Movie("Movie777777777777", "Description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, "Tarantino3", Arrays.asList("Actor4") )
+                new Movie("Movie1", "Description1", Arrays.asList("Action", "Drama", "Thriller"), 2002, 9.0, Arrays.asList("Tarantino1"), Arrays.asList("Actor1") ),
+                new Movie("Movie222", "Description2", Arrays.asList("Action", "Comedy"), 2010, 7.6, Arrays.asList("Tarantino1"), Arrays.asList("Actor1") ),
+                new Movie("Movie33333", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, Arrays.asList("Tarantino1"), Arrays.asList("Actor1") ),
+                new Movie("Movie4444444", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, Arrays.asList("Tarantino2"), Arrays.asList("Actor1") ),
+                new Movie("Movie55555555", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, Arrays.asList("Tarantino2"), Arrays.asList("Actor2") ),
+                new Movie("Movie6666666666", "Description6", Arrays.asList("History", "Drama"), 1960, 8.7, Arrays.asList("Tarantino3"), Arrays.asList("Actor3") ),
+                new Movie("Movie777777777777", "Description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, Arrays.asList("Tarantino3"), Arrays.asList("Actor4") )
 
         );
         ObservableList<Movie> observableMovies = FXCollections.observableArrayList(mockMovies);
@@ -100,7 +100,7 @@ End ChatGPT
         // then
         ObservableList<Movie> filteredMovies = controller.getFilteredMovies();
         assertEquals(1, filteredMovies.size());
-        assertTrue(filteredMovies.contains(new Movie ("Movie1", "Description1", Arrays.asList("Action", "Drama", "Thriller"), 2002, 9.0, "Tarantino1", Arrays.asList("Actor1") )));
+        assertTrue(filteredMovies.contains(new Movie ("Movie1", "Description1", Arrays.asList("Action", "Drama", "Thriller"), 2002, 9.0, Arrays.asList("Tarantino1"), Arrays.asList("Actor1") )));
 
 
     }
@@ -119,7 +119,7 @@ End ChatGPT
         // then
         ObservableList<Movie> filteredMovies = controller.getFilteredMovies();
         System.out.println("Filtered movies: " + filteredMovies);
-        assertTrue(filteredMovies.contains(new Movie("Movie222", "Description2", Arrays.asList("Action", "Comedy"), 2010, 7.6, "Tarantino1", Arrays.asList("Actor1"))));
+        assertTrue(filteredMovies.contains(new Movie("Movie222", "Description2", Arrays.asList("Action", "Comedy"), 2010, 7.6, Arrays.asList("Tarantino1"), Arrays.asList("Actor1"))));
         assertEquals(1, filteredMovies.size());
 
     }
@@ -136,10 +136,10 @@ End ChatGPT
         // then
         ObservableList<Movie> filteredMovies = controller.getFilteredMovies();
         System.out.println("Filtered movies: " + filteredMovies);
-        assertTrue(filteredMovies.contains(new Movie("Movie33333", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, "Tarantino1", Arrays.asList("Actor1"))));
-        assertTrue(filteredMovies.contains(new Movie("Movie6666666666", "Description6", Arrays.asList("History", "Drama"), 1960, 8.7, "Tarantino3", Arrays.asList("Actor3"))));
-        assertTrue(filteredMovies.contains(new Movie("Movie777777777777", "Description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, "Tarantino3", Arrays.asList("Actor4"))));
-        assertTrue(filteredMovies.contains(new Movie("Movie1", "Description1", Arrays.asList("Action", "Drama", "Thriller"), 2002, 9.0, "Tarantino1", Arrays.asList("Actor1") )));
+        assertTrue(filteredMovies.contains(new Movie("Movie33333", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, Arrays.asList("Tarantino1"), Arrays.asList("Actor1"))));
+        assertTrue(filteredMovies.contains(new Movie("Movie6666666666", "Description6", Arrays.asList("History", "Drama"), 1960, 8.7, Arrays.asList("Tarantino3"), Arrays.asList("Actor3"))));
+        assertTrue(filteredMovies.contains(new Movie("Movie777777777777", "Description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, Arrays.asList("Tarantino3"), Arrays.asList("Actor4"))));
+        assertTrue(filteredMovies.contains(new Movie("Movie1", "Description1", Arrays.asList("Action", "Drama", "Thriller"), 2002, 9.0, Arrays.asList("Tarantino1"), Arrays.asList("Actor1") )));
         assertEquals(4, filteredMovies.size());
 
     }
@@ -157,7 +157,7 @@ End ChatGPT
         // then
         ObservableList<Movie> filteredMovies = controller.getFilteredMovies();
         System.out.println("Filtered movies: " + filteredMovies);
-        assertTrue(filteredMovies.contains(new Movie("Movie4444444", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, "Tarantino2", Arrays.asList("Actor1") )));
+        assertTrue(filteredMovies.contains(new Movie("Movie4444444", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, Arrays.asList("Tarantino2"), Arrays.asList("Actor1") )));
 
         assertEquals(1, filteredMovies.size());
 
@@ -198,9 +198,9 @@ End ChatGPT
     @Test
     void testGetMostPopularActor() {
         // given
-        Movie movie1 = new Movie ("Movie33333", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, "Tarantino1", Arrays.asList("Actor1") );
-        Movie movie2 = new Movie("Movie4444444", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, "Tarantino2", Arrays.asList("Actor1") );
-        Movie movie3 = new Movie("Movie55555555", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, "Tarantino2", Arrays.asList("Actor2") );
+        Movie movie1 = new Movie ("Movie33333", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, Arrays.asList("Tarantino1"), Arrays.asList("Actor1") );
+        Movie movie2 = new Movie("Movie4444444", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, Arrays.asList("Tarantino2"), Arrays.asList("Actor1") );
+        Movie movie3 = new Movie("Movie55555555", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, Arrays.asList("Tarantino2"), Arrays.asList("Actor2") );
 
 
         List<Movie> movies = Arrays.asList(movie1, movie2, movie3);
@@ -225,10 +225,10 @@ End ChatGPT
     @Test
     void testGetMostPopularActor_AllActorsEqual() {
         // given
-        Movie movie1 = new Movie ("Movie33333", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, "Tarantino1", Arrays.asList("Actor1", "Actor2") );
+        Movie movie1 = new Movie ("Movie33333", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, Arrays.asList("Tarantino1"), Arrays.asList("Actor1", "Actor2") );
 
 
-        Movie movie2 = new Movie("Movie4444444", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, "Tarantino2", Arrays.asList("Actor1", "Actor2") );
+        Movie movie2 = new Movie("Movie4444444", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, Arrays.asList("Tarantino2"), Arrays.asList("Actor1", "Actor2") );
 
 
         List<Movie> movies = Arrays.asList(movie1, movie2);
@@ -242,9 +242,9 @@ End ChatGPT
     @Test
     void testGetLongestMovieTitle() {
         // given
-        Movie movie1 = new Movie("Short", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, "Tarantino1", Arrays.asList("Actor1") );
-        Movie movie2 = new Movie("LongerTitle", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, "Tarantino2", Arrays.asList("Actor1") );
-        Movie movie3 = new Movie("VeryLongTitleIndeed", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, "Tarantino2", Arrays.asList("Actor2") );
+        Movie movie1 = new Movie("Short", "Description3", Arrays.asList("Biography", "Drama"), 1995, 5.0, Arrays.asList("Tarantino1"), Arrays.asList("Actor1") );
+        Movie movie2 = new Movie("LongerTitle", "Description4", Arrays.asList("Animation", "Comedy"), 1980, 5.5, Arrays.asList("Tarantino2"), Arrays.asList("Actor1") );
+        Movie movie3 = new Movie("VeryLongTitleIndeed", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, Arrays.asList("Tarantino2"), Arrays.asList("Actor2") );
 
         List<Movie> movies = Arrays.asList(movie1, movie2, movie3);
 
@@ -268,8 +268,8 @@ End ChatGPT
     @Test
     void testGetLongestMovieTitle_AllTitlesEqual() {
         // given
-        Movie movie1 = new Movie("Title", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, "Tarantino2", Arrays.asList("Actor2") );
-        Movie movie2 = new Movie("Title", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, "Tarantino3", Arrays.asList("Actor3") );
+        Movie movie1 = new Movie("Title", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, Arrays.asList("Tarantino2"), Arrays.asList("Actor2") );
+        Movie movie2 = new Movie("Title", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, Arrays.asList("Tarantino3"), Arrays.asList("Actor3") );
 
         List<Movie> movies = Arrays.asList(movie1, movie2);
 
@@ -282,14 +282,14 @@ End ChatGPT
     @Test
     void testCountMoviesFrom() {
         // given
-        Movie movie1 = new Movie("Movie1", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, "Tarantino2", Arrays.asList("Actor2") );
-        Movie movie2 = new Movie("Movie2", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, "Tarantino3", Arrays.asList("Actor3") );
-        Movie movie3 = new Movie("Movie3", "description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, "Tarantino3", Arrays.asList("Actor4") );
+        Movie movie1 = new Movie("Movie1", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, Arrays.asList("Tarantino2"), Arrays.asList("Actor2") );
+        Movie movie2 = new Movie("Movie2", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, Arrays.asList("Tarantino3"), Arrays.asList("Actor3") );
+        Movie movie3 = new Movie("Movie3", "description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, Arrays.asList("Tarantino3"), Arrays.asList("Actor4") );
 
         List<Movie> movies = Arrays.asList(movie1, movie2, movie3);
 
         // when
-        long count = controller.countMoviesFrom(movies, "Tarantino3");
+        long count = controller.countMoviesFrom(movies, Arrays.asList("Tarantino3"));
 
         // then
         assertEquals(2, count);
@@ -299,7 +299,7 @@ End ChatGPT
     void testCountMoviesFrom_NoMovies() {
         //given
         //when
-        long count = controller.countMoviesFrom(Collections.emptyList(), "DirectorA");
+        long count = controller.countMoviesFrom(Collections.emptyList(), Arrays.asList("DirectorA"));
 
         // then
         assertEquals(0, count);
@@ -308,13 +308,13 @@ End ChatGPT
     @Test
     void testCountMoviesFrom_AllMoviesByDirector() {
         // given
-        Movie movie1 = new Movie("Movie1", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, "Tarantino3", Arrays.asList("Actor3") );
-        Movie movie2 = new Movie("Movie2", "description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, "Tarantino3", Arrays.asList("Actor4") );
+        Movie movie1 = new Movie("Movie1", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, Arrays.asList("Tarantino3"), Arrays.asList("Actor3") );
+        Movie movie2 = new Movie("Movie2", "description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, Arrays.asList("Tarantino3"), Arrays.asList("Actor4") );
 
         List<Movie> movies = Arrays.asList(movie1, movie2);
 
         // when
-        long count = controller.countMoviesFrom(movies, "Tarantino3");
+        long count = controller.countMoviesFrom(movies, Arrays.asList("Tarantino3"));
 
         // then
         assertEquals(2, count);
@@ -322,10 +322,10 @@ End ChatGPT
     @Test
     void testGetMoviesBetweenYears() {
         // given
-        Movie movie1 = new Movie("Movie1", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, "Tarantino2", Arrays.asList("Actor2") );
-        Movie movie2 = new Movie("Movie2", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, "Tarantino3", Arrays.asList("Actor3") );
-        Movie movie3 = new Movie("Movie3", "description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, "Tarantino3", Arrays.asList("Actor4") );
-        Movie movie4 = new Movie("Movie4", "description8", Arrays.asList("Thriller", "Drama"), 2000, 4.5, "Tarantino3", Arrays.asList("Actor4") );
+        Movie movie1 = new Movie("Movie1", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, Arrays.asList("Tarantino2"), Arrays.asList("Actor2") );
+        Movie movie2 = new Movie("Movie2", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, Arrays.asList("Tarantino3"), Arrays.asList("Actor3") );
+        Movie movie3 = new Movie("Movie3", "description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, Arrays.asList("Tarantino3"), Arrays.asList("Actor4") );
+        Movie movie4 = new Movie("Movie4", "description8", Arrays.asList("Thriller", "Drama"), 2000, 4.5, Arrays.asList("Tarantino3"), Arrays.asList("Actor4") );
 
 
         List<Movie> movies = Arrays.asList(movie1, movie2, movie3, movie4);
@@ -354,10 +354,10 @@ End ChatGPT
     @Test
     void testGetMoviesBetweenYears_AllMoviesWithinRange() {
         // given
-        Movie movie1 = new Movie("Movie1", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, "Tarantino2", Arrays.asList("Actor2") );
-        Movie movie2 = new Movie("Movie2", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, "Tarantino3", Arrays.asList("Actor3") );
-        Movie movie3 = new Movie("Movie3", "description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, "Tarantino3", Arrays.asList("Actor4") );
-        Movie movie4 = new Movie("Movie4", "description8", Arrays.asList("Thriller", "Drama"), 2000, 4.5, "Tarantino3", Arrays.asList("Actor4") );
+        Movie movie1 = new Movie("Movie1", "Description5", Arrays.asList("Action", "Horror"), 1975, 7.0, Arrays.asList("Tarantino2"), Arrays.asList("Actor2") );
+        Movie movie2 = new Movie("Movie2", "description6", Arrays.asList("History", "Drama"), 1960, 8.7, Arrays.asList("Tarantino3"), Arrays.asList("Actor3") );
+        Movie movie3 = new Movie("Movie3", "description7", Arrays.asList("Thriller", "Drama"), 1945, 4.5, Arrays.asList("Tarantino3"), Arrays.asList("Actor4") );
+        Movie movie4 = new Movie("Movie4", "description8", Arrays.asList("Thriller", "Drama"), 2000, 4.5, Arrays.asList("Tarantino3"), Arrays.asList("Actor4") );
 
         List<Movie> movies = Arrays.asList(movie1, movie2, movie3, movie4);
 

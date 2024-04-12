@@ -1,5 +1,6 @@
-package at.ac.fhcampuswien.fhmdb;
+package at.ac.fhcampuswien.fhmdb.controllers;
 
+import at.ac.fhcampuswien.fhmdb.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
@@ -9,12 +10,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
@@ -22,6 +24,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import javafx.fxml.FXMLLoader;
+import javafx.stage.Stage;
 
 public class HomeController implements Initializable {
     @FXML
@@ -55,8 +60,34 @@ public class HomeController implements Initializable {
 
     FilteredList<Movie> filteredMovies;
     FilteredList<Movie> filteredMovies2;
+    @FXML
+    private VBox homeView;
+    public HomeController() {
+    }
+
+    public HomeController(VBox homeView) {
+        this.homeView = homeView;
+    }
+
+    @FXML
+    public void showWatchlistScreen(ActionEvent event) throws IOException {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/at/ac/fhcampuswien/fhmdb/watchlist-view.fxml"));
+            Parent root = fxmlLoader.load();
+
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    ///at/ac/fhcampuswien/fhmdb/watchlist-view.fxml
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        homeView = new VBox();
+        Scene scene = new Scene(homeView);
         MovieAPI movieAPI = new MovieAPI();
 
         String movieId = "8ca193d8-7879-42ed-820e-6230b52746a3";
@@ -341,5 +372,7 @@ public class HomeController implements Initializable {
 public ObservableList<Movie> getObservableMovies() {
         return observableMovies;
     }
+
+
 
 }

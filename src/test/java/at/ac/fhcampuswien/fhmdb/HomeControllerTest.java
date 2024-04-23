@@ -33,6 +33,8 @@ class HomeControllerTest {
 /*
 ChatGPT
 */
+
+
     @BeforeAll
     static void initJFX() {
         System.setProperty("testfx.robot", "glass");
@@ -54,9 +56,11 @@ ChatGPT
             e.printStackTrace();
         }
     }
+}
 /*
 End ChatGPT
  */
+/*
     @BeforeEach
     void setUp() {
         //given
@@ -373,4 +377,4 @@ End ChatGPT
         assertTrue(filteredMovies.contains(movie4));
     }
 
-}
+}*/

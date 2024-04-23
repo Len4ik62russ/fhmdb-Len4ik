@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.MovieAPI;
+import at.ac.fhcampuswien.fhmdb.database.*;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
@@ -22,6 +23,7 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,7 @@ public class HomeController implements Initializable {
 
     @FXML
     public JFXListView movieListView;
+
 
     @FXML
     public JFXComboBox<String> genreComboBox;
@@ -62,33 +65,114 @@ public class HomeController implements Initializable {
     FilteredList<Movie> filteredMovies2;
     @FXML
     private VBox homeView;
+    private DatabaseManager dbManager;
+    private final MovieCell.ClickEventHandler<Movie> onAddToWatchlistClicked = (clickedItem) -> {
+        MovieRepository movieRepository = new MovieRepository();
+
+        try {
+            // Convert Movie to MovieEntity
+            MovieEntity movieEntity = new MovieEntity();
+            movieEntity.setTitle(clickedItem.getTitle());
+            movieEntity.setGenres(clickedItem.getGenre().stream().collect(Collectors.joining(", ")));
+            movieEntity.setDescription(clickedItem.getDescription());
+            movieEntity.setReleaseYear(clickedItem.getReleaseYear());
+
+
+            // Add more fields if needed
+
+            // Add the movie to the MovieEntity table and WatchlistMovieEntity table
+            movieRepository.addMovieToWatchlist(movieEntity);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    };
+
     public HomeController() {
+
     }
 
     public HomeController(VBox homeView) {
         this.homeView = homeView;
+
     }
-
-    @FXML
-    public void showWatchlistScreen(ActionEvent event) throws IOException {
+    public void getMoviesFromDatabase() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/at/ac/fhcampuswien/fhmdb/watchlist-view.fxml"));
-            Parent root = fxmlLoader.load();
+            MovieRepository movieRepository = new MovieRepository();
+            List<MovieEntity> movies = movieRepository.getAllMovies();
 
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
+            for (MovieEntity movie : movies) {
+                // Verarbeiten Sie die Ergebnisse hier und fügen Sie sie Ihrer Benutzeroberfläche hinzu
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public void saveMovieToDatabase(Movie movie) {
+        try {
+            MovieRepository movieRepository = new MovieRepository();
+            MovieEntity movieEntity = new MovieEntity();
+            // Setzen Sie die restlichen Werte hier
+            movieEntity.setTitle(movie.getTitle());
+            movieRepository.addMovie(movieEntity);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    public void showWatchlistScreen(ActionEvent event) throws IOException {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/at/ac/fhcampuswien/fhmdb/watchlist-view.fxml"));
+                Parent root = fxmlLoader.load();
+
+
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    Movie convertMovieEntityToMovie(WatchlistMovieEntity movie) throws SQLException {
+        MovieRepository movieRepository = new MovieRepository();
+        MovieEntity movieEntity = movieRepository.findById(movie.getId());
+
+        if (movieEntity == null) {
+            throw new SQLException("No movie found with the provided ID");
+        }
+
+        Movie realMovie = new Movie();
+        realMovie.setTitle(movieEntity.getTitle());
+        realMovie.setGenre(Arrays.asList(movieEntity.getGenres().split(", ")));
+        realMovie.setDescription(movieEntity.getDescription());
+        realMovie.setReleaseYear(movieEntity.getReleaseYear());
+        // Set the rest of the values here
+        return realMovie;
+    }
+
     ///at/ac/fhcampuswien/fhmdb/watchlist-view.fxml
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        try {
+            DatabaseManager dbManager = DatabaseManager.getDatabase();
+            // Jetzt können Sie dbManager verwenden, um auf die Methoden und Felder der Klasse DatabaseManager zuzugreifen.
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         homeView = new VBox();
         Scene scene = new Scene(homeView);
-        MovieAPI movieAPI = new MovieAPI();
+        MovieAPI movieAPI = null;
+        try {
+            movieAPI = new MovieAPI();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         String movieId = "8ca193d8-7879-42ed-820e-6230b52746a3";
 
@@ -104,10 +188,16 @@ public class HomeController implements Initializable {
         long count = 0;
         List<Movie> movies = null;
         try {
-            movies = movieAPI.getMovies(null, null, null, 0, 0.0, null, null);
 
-            movies.stream()
-                    .forEach(movie -> System.out.println(movie.getTitle() + " " + movie.getMainCast() + " " + movie.getDirector() + " " + movie.getGenre() + " " + movie.getRating() + " " + movie.getReleaseYear()));
+            movies = movieAPI.getMovies(null,null, 0, null, null, null, 0, 0.0);
+
+
+
+
+
+
+            /*movies.stream()
+                    .forEach(movie -> System.out.println(movie.getTitle() + movie.getId()));*/
 
 
 
@@ -117,14 +207,66 @@ public class HomeController implements Initializable {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        /*
+        for(int i = 0; i < movies.size(); i++){
+            Movie movie = movies.get(i);
+            MovieEntity movieEntity = new MovieEntity();
+            // Setzen Sie die Eigenschaften von movieEntity basierend auf dem movie-Objekt
+            movieEntity.setApiId(movie.getId());
+            movieEntity.setTitle(movie.getTitle());
+            movieEntity.setGenres(movie.getGenre().stream().collect(Collectors.joining(", ")));
+            movieEntity.setDescription(movie.getDescription());
+            movieEntity.setReleaseYear(movie.getReleaseYear());
+            movieEntity.setImgUrl(movie.getImgUrl());
+            movieEntity.setLengthInMinutes(movie.getLengthInMinutes());
+            movieEntity.setRatingFrom(movie.getRating());
+            // Fügen Sie das movieEntity-Objekt in die Datenbank ein
+            MovieRepository movieRepository;
+            try {
+                movieRepository = new MovieRepository();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                movieRepository.addMovie(movieEntity);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }*/
 
         observableMovies.addAll(movies);
+        /*MovieRepository movieRepository = null;
+        try {
+            movieRepository = new MovieRepository();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
+        for (Movie movie : movies) {
+            MovieEntity movieEntity = new MovieEntity();
+            // Setzen Sie die Eigenschaften von movieEntity basierend auf dem movie-Objekt
+            movieEntity.setApiId(movie.getId());
+            movieEntity.setTitle(movie.getTitle());
+            movieEntity.setGenres(movie.getGenre().stream().collect(Collectors.joining(", ")));
+            movieEntity.setDescription(movie.getDescription());
+            movieEntity.setReleaseYear(movie.getReleaseYear());
+            movieEntity.setImgUrl(movie.getImgUrl());
+            movieEntity.setLengthInMinutes(movie.getLengthInMinutes());
+            movieEntity.setRatingFrom(movie.getRating());
+            // Fügen Sie das movieEntity-Objekt in die Datenbank ein
+            try {
+                movieRepository.addMovie(movieEntity);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }*/
 
         // initialize UI stuff
         movieListView.setItems(observableMovies);   // set data of observable list to list view
-        movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
+        movieListView.setCellFactory(movieListView -> new MovieCell(onAddToWatchlistClicked)); // use custom cell factory to display data
 
 
         // Initialize genre filter items

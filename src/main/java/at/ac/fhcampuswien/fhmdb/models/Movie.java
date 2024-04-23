@@ -10,6 +10,28 @@ import java.util.List;
 import java.util.Objects;
 
 public class Movie extends TypeAdapter<Movie> {
+    private String imgUrl;
+    public String getImgUrl() {
+        return imgUrl;
+    }
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+    private int lengthInMinutes;
+    public int getLengthInMinutes() {
+        return lengthInMinutes;
+    }
+    public void setLengthInMinutes(int lengthInMinutes) {
+        this.lengthInMinutes = lengthInMinutes;
+    }
+
+    private String id;
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
     public Movie() {
 
     }
@@ -67,7 +89,10 @@ public class Movie extends TypeAdapter<Movie> {
 
     // TODO add more properties here
 
-    public Movie(String title, String description, List<String> genres, int releaseYear, double rating, List<String> directors, List<String> mainCast) {
+    public Movie(String id, String imgUrl, int lengthInMinutes, String title, String description, List<String> genres, int releaseYear, double rating, List<String> directors, List<String> mainCast) {
+        this.imgUrl = imgUrl;
+        this.lengthInMinutes = lengthInMinutes;
+        this.id = id;
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -90,6 +115,8 @@ public class Movie extends TypeAdapter<Movie> {
         out.name("title").value(movie.getTitle());
         out.name("description").value(movie.getDescription());
         out.name("genres");
+        out.name("id").value(movie.getId());
+
         out.beginArray();
         for (String genre : movie.getGenre()) {
             out.value(genre);
@@ -126,6 +153,9 @@ public class Movie extends TypeAdapter<Movie> {
         List<String> genres = new ArrayList<>();
         int releaseYear = 0;
         double rating = 0.0;
+        String apiId = null;
+        String imgUrl = null;
+        int lengthInMinutes = 0;
         List<String> directors = new ArrayList<>();
         List<String> mainCast = new ArrayList<>();
 
@@ -158,13 +188,15 @@ public class Movie extends TypeAdapter<Movie> {
                     mainCast.add(in.nextString());
                 }
                 in.endArray();
-            }
+            } else if (name.equals("id")) {
+                apiId = in.nextString();
 
+            }
+            in.endObject();
         }
-        in.endObject();
-        return new Movie(title, description, genres, releaseYear, rating, directors, mainCast);
-    }
-    //Ende Chat GPT-3
+            return new Movie(apiId, imgUrl, lengthInMinutes, title, description, genres, releaseYear, rating, directors, mainCast);
+        }
+        //Ende Chat GPT-3
 
 
     public static List<Movie> initializeMovies(){
